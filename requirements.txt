@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+httpx
+beautifulsoup4
+google-generativeai
+google-cloud-storage
+sqlalchemy
+psycopg2-binary
+pgvector
+pydantic-settings
+python-dotenv
