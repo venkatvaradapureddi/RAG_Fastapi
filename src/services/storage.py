@@ -13,7 +13,7 @@ def upload_image_to_gcs(image_url: str) -> str:
         return None
 
     try:
-        # 1. Download Image (Sync is fine here as it runs in threadpool later)
+        # Download Image (Sync is fine here as it runs in threadpool later)
         with httpx.Client() as client:
             resp = client.get(image_url)
             if resp.status_code != 200:
@@ -22,16 +22,18 @@ def upload_image_to_gcs(image_url: str) -> str:
             image_bytes = resp.content
             content_type = resp.headers.get("content-type", "image/jpeg")
 
-        # 2. Upload to GCS
+        # Upload to GCS
         filename = f"books/{uuid.uuid4()}.jpg"
         
-        client = storage.Client()
+        client = storage.Client(project=settings.GOOGLE_PROJECT_ID)
         bucket = client.bucket(settings.GCS_BUCKET_NAME)
         blob = bucket.blob(filename)
         
         blob.upload_from_file(BytesIO(image_bytes), content_type=content_type)
         
-        return f"gs://{settings.GCS_BUCKET_NAME}/{filename}"
+        blob.make_public()
+
+        return blob.public_url
 
     except Exception as e:
         print(f"GCS Upload Error: {e}")

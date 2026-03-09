@@ -10,8 +10,6 @@ from src.services.storage import upload_image_to_gcs
 from src.services.embedder import generate_embedding
 
 router = APIRouter()
-
-# --- Request/Response Schemas ---
 class IngestRequest(BaseModel):
     url: str
 
@@ -20,14 +18,14 @@ class IngestResponse(BaseModel):
     book_title: str
     gcs_uri: str | None
 
-# --- Route Logic ---
+
 @router.post("/ingest", response_model=IngestResponse)
 async def ingest_book(payload: IngestRequest, db: Session = Depends(get_db)):
     """
     Ingests a book URL: Scrapes -> Uploads Image -> Embeds -> Saves to DB.
     """
     
-    # 1. Scrape (Async I/O)
+    # Scrape (Async I/O)
     data = await scrape_book_details(payload.url)
     
     loop = asyncio.get_event_loop()
@@ -47,12 +45,14 @@ async def ingest_book(payload: IngestRequest, db: Session = Depends(get_db)):
             existing_book.title = data['title']
             existing_book.content_chunk = data['content_chunk']
             existing_book.image_uri = gcs_uri
+            existing_book.product_table = data['product_table']
             existing_book.embedding = vector
         else:
             new_book = Book(
                 source_url=payload.url,
                 title=data['title'],
                 content_chunk=data['content_chunk'],
+                product_table=data['product_table'],
                 image_uri=gcs_uri,
                 embedding=vector
             )

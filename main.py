@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from src.core.config import settings
 from src.core.database import engine, Base
 from src.routes.ingest_route import router
+from src.routes import search_route
+
 
 def init_db():
     try:
@@ -23,8 +25,6 @@ init_db()
 app = FastAPI(title=settings.PROJECT_NAME)
 
 app.include_router(router, tags=["Ingestion"])
+app.include_router(search_route.router, tags=["search"])
 
-@app.get("/")
-def health_check():
-    return {"status": "ok"}
 

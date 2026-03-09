@@ -9,3 +9,7 @@ psycopg2-binary
 pgvector
 pydantic-settings
 python-dotenv
+google-adk>=1.23.0
+streamlit
+requests
+rapidfuzz
