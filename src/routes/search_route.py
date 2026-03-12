@@ -2,7 +2,7 @@ import uuid
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-
+import asyncio
 from src.core.database import get_db
 from src.services.retriever import search_books_tool,load_titles
 from src.agents.book_agent import book_assistant_agent
@@ -43,11 +43,11 @@ async def search_books_endpoint(payload: SearchRequest, db: Session = Depends(ge
     tables = []
 
     if is_book_query(query):
-        print(f"🔎 Searching DB for: {query}")
+        print(f"Searching DB for: {query}")
         try:
-            retrieval = search_books_tool(query)
+            retrieval = await asyncio.to_thread(search_books_tool, query)
             
-            # SAFETY CHECK: Ensure retrieval is a dictionary and has data
+            # ensure retrieval is a dictionary and has data
             if isinstance(retrieval, dict):
                 context = retrieval.get("context", "")
                 images = retrieval.get("images", [])

@@ -25,17 +25,12 @@ async def ingest_book(payload: IngestRequest, db: Session = Depends(get_db)):
     Ingests a book URL: Scrapes -> Uploads Image -> Embeds -> Saves to DB.
     """
     
-    # Scrape (Async I/O)
     data = await scrape_book_details(payload.url)
     
-    loop = asyncio.get_event_loop()
-    
-    # gcs_task = loop.run_in_executor(None, upload_image_to_gcs, data['image_url'])
-    # embed_task = loop.run_in_executor(None, generate_embedding, data['content_chunk'])
-    
-    # gcs_uri, vector = await asyncio.gather(gcs_task, embed_task)
-    gcs_uri = None
-    vector = await loop.run_in_executor(None, generate_embedding, data['content_chunk'])
+    gcs_uri, vector = await asyncio.gather(
+        upload_image_to_gcs(data["image_url"]),
+        generate_embedding(data["content_chunk"])
+    )
 
     try:
         # Check for existing book to avoid duplicates

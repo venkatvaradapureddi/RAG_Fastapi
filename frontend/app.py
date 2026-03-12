@@ -22,11 +22,11 @@ for message in st.session_state.messages:
             for table in message["tables"]:
                 st.markdown(table, unsafe_allow_html=True)
 
-        if message.get("images"):
-            cols = st.columns(len(message["images"]))
-            for col, img in zip(cols, message["images"]):
-                with col:
-                    st.image(img)
+        # if message.get("images"):
+        #     cols = st.columns(len(message["images"]))
+        #     for col, img in zip(cols, message["images"]):
+        #         with col:
+        #             st.image(img)
 
 
 user_query = st.chat_input("Ask a question about a book...")
@@ -65,11 +65,11 @@ if user_query:
                     for table in tables:
                         st.markdown(table, unsafe_allow_html=True)
 
-                if images:
-                    cols = st.columns(len(images))
-                    for col, img in zip(cols, images):
-                        with col:
-                            st.image(img)
+                # if images:
+                #     cols = st.columns(len(images))
+                #     for col, img in zip(cols, images):
+                #         with col:
+                #             st.image(img)
 
                 # Save assistant response to session state
                 st.session_state.messages.append({

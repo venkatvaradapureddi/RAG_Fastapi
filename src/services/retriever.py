@@ -58,7 +58,7 @@ def search_books_tool(query: str):
 
             query_vector = generate_embedding(query)
 
-            results = db.query(Book).order_by(
+            results = db.query(Book).filter(Book.embedding.cosine_distance(query_vector) <= 0.3).order_by(
                 Book.embedding.cosine_distance(query_vector)
             ).limit(3).all()
 
