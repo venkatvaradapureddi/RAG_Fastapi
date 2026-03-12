@@ -53,7 +53,7 @@ def search_books_tool(query: str):
             results = db.query(Book).filter(Book.title.in_(titles)).all()
 
         else:
-            # FALLBACK → CHUNK EMBEDDING SEARCH
+            # FALLBACK CHUNK EMBEDDING SEARCH
             print("No title match. Using embedding search.")
 
             query_vector = generate_embedding(query)

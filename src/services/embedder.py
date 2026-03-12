@@ -1,12 +1,16 @@
 from google import genai
 from src.core.config import settings
 import asyncio
+import os
 
+# client = genai.Client(
+#     vertexai=True,
+#     project=settings.GOOGLE_CLOUD_PROJECT,
+#     location=settings.GOOGLE_CLOUD_LOCATION
+# )
 
 client = genai.Client(
-    vertexai=True,
-    project=settings.GOOGLE_CLOUD_PROJECT,
-    location=settings.GOOGLE_CLOUD_LOCATION
+    api_key=os.getenv("GOOGLE_API_KEY")  # or directly put your key here
 )
 
 async def generate_embedding(text: str) -> list[float]:
